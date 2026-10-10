@@ -1,51 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hero</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Service Ticket Management – Filter Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--navy:#0a1a4f;--red:#f02a3a;--ink:#1a1a1a;--mut:#777;--line:#e4e6ee;--bg:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0}
+body{font:13px Inter,system-ui,sans-serif;color:var(--ink);background:#f4f5fa}
+.wrap{min-width:1180px;overflow-x:auto}
+.top{height:48px;background:#eef0fb;display:flex;align-items:center;padding:0 24px;gap:14px}
+.logo{font-weight:600;font-size:22px;letter-spacing:2px;color:var(--navy);width:130px}
+.pill{background:#fff;border-radius:20px;padding:6px 14px;color:#888;font-size:12px}
+.sp{flex:1}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#0b6b3a;margin-right:6px}
+.av{width:28px;height:28px;border-radius:50%;background:#7a5c46}
+.body{display:flex;gap:8px;padding:8px;height:calc(100vh - 56px);min-height:600px}
+.rail{width:60px;background:var(--navy);border-radius:10px;color:#cfd4ee;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:22px;padding-top:18px}
+.rail b{width:18px;height:14px;border:1.5px solid #cfd4ee;border-radius:3px;display:block;margin:0 auto 4px}
+.rail div:first-child{color:#fff}
+.side{width:203px;background:#fff;border-radius:10px;padding:16px 12px}
+.side h4{font-weight:500;margin-bottom:12px}.side p{padding:9px 0;font-size:13px}
+.main{flex:1;background:#fff;border-radius:10px;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.title{height:48px;background:linear-gradient(90deg,#fff,#fbeaf0);display:flex;align-items:center;padding:0 16px;font-weight:500;font-size:16px;gap:12px}
+.btn-c{background:var(--red);color:#fff;border:0;border-radius:4px;padding:8px 22px;font:500 14px Inter}
+.tabs{display:flex;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line)}
+.tabs div:first-child{background:#eef0f6;border-radius:6px;padding:4px;display:flex;gap:10px;font-size:12px;color:#555}
+.tabs span{padding:5px 14px}.tabs .on{background:#fff;border-radius:5px;color:#000}
+.search{border:1px solid var(--line);border-radius:6px;padding:7px 14px;color:#999;width:260px}
+.bar{display:flex;align-items:center;gap:14px;padding:14px 20px;font-size:12px;color:#777}
+.ob{border:1px solid var(--line);border-radius:4px;padding:6px 12px;background:#fff;color:#777;font:12px Inter;cursor:pointer}
+.chk{width:16px;height:16px;border-radius:3px;background:#0b8a6a;display:inline-block;vertical-align:middle;margin-right:6px}
+.lg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 6px 0 12px}
+#fbtn{margin-left:auto;position:relative}
+#fbtn.act{border-color:var(--navy);color:var(--navy)}
+#fbtn em{position:absolute;top:-7px;right:-7px;background:var(--red);color:#fff;border-radius:9px;font:600 10px Inter;padding:2px 6px;font-style:normal}
+.list{flex:1;overflow:auto;padding:0 20px 12px}
+.card{display:flex;border:1px solid var(--line);border-radius:8px;margin-bottom:14px;overflow:hidden;background:#fff;box-shadow:0 1px 4px #0001}
+.id{width:36px;color:#fff;font-weight:500;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:16px;letter-spacing:.5px;flex:none}
+.l{flex:1;padding:12px 20px;border-right:1px solid var(--line)}
+.l h3{font-size:14px;font-weight:600;display:flex;gap:16px;align-items:center}
+.tag{color:#fff;font:500 11px Inter;padding:3px 10px;border-radius:3px}
+.m{display:flex;gap:16px;align-items:center;margin:10px 0;font-size:12px;color:#444}
+.st{padding:4px 12px;border-radius:4px;font-weight:500}
+.pr{border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:#666;display:flex;gap:16px}
+.r{width:442px;padding:14px 18px;font-size:13px;display:flex;flex-direction:column;gap:12px}
+.acts{display:flex;gap:8px;margin-top:auto}.acts span{border:1px solid var(--line);border-radius:4px;padding:5px 10px;font-size:12px;color:#555}
+.empty{text-align:center;padding:60px;color:#888}
+.foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:12px;color:#555}
+.pg span{padding:4px 10px;border-radius:3px;background:#eef0f6;margin-left:6px;color:#888}.pg .on{background:var(--navy);color:#fff}
+/* modal */
+#ov{position:fixed;inset:0;background:#0007;display:none;align-items:flex-start;justify-content:center;padding-top:max(60px,8vh);z-index:10}
+#ov.show{display:flex}
+.modal{width:754px;max-width:94vw;background:#fff;border-radius:22px;box-shadow:0 10px 40px #0004;animation:pop .18s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.mh{background:#e8ecfa;height:52px;border-radius:22px 22px 0 0;display:flex;align-items:center;justify-content:space-between;padding:0 42px;font-weight:600;font-size:16px}
+.x{width:20px;height:20px;border:1.5px solid #555;border-radius:50%;text-align:center;line-height:17px;cursor:pointer;font-size:13px}
+.mb{padding:30px 42px 20px;min-height:290px}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;position:relative}
+.hd>b{font-weight:500}
+.hd .ob{border-color:#eee;color:#888;margin-left:10px}
+.row{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.dd{position:relative;flex:1}
+.dt{border:1px solid var(--line);border-radius:4px;height:36px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;color:#444;background:#fff}
+.dt.ph{color:#777}.dt svg{width:14px;transition:transform .15s}.dd.open .dt{border-color:var(--navy)}.dd.open svg{transform:rotate(180deg)}
+.menu{position:absolute;top:44px;left:0;min-width:100%;width:max-content;max-width:300px;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:0 4px 16px #0002;z-index:5;padding:6px 0;max-height:300px;overflow:auto}
+.menu input{display:block;margin:2px 10px 8px;width:calc(100% - 20px);border:1px solid #bbb;border-radius:4px;padding:6px 10px;font:12px Inter;outline:0}
+.menu div{padding:10px 20px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.menu div:hover{background:#f1f3fb}.menu div.sel{background:#e8ecfa}
+.ic{width:14px;height:14px;border:1.3px solid #888;border-radius:3px;flex:none}
+.del{width:24px;text-align:center;color:#777;cursor:pointer;font-size:16px}.del:hover{color:var(--red)}
+.add{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:4px;padding:8px 20px;background:#fff;cursor:pointer;font:14px Inter;color:#555}
+.add:hover{border-color:var(--navy)}
+.ca{float:right;border:1px solid var(--red);color:var(--red);background:#fff;border-radius:4px;padding:8px 20px;font:14px Inter;cursor:pointer}
+.mf{border-top:1px solid var(--line);padding:16px 42px;display:flex;justify-content:flex-end;gap:16px}
+.mf button{width:118px;height:36px;border:0;border-radius:4px;color:#fff;font:500 14px Inter;cursor:pointer}
+#cn{background:var(--navy)}#ap{background:var(--red)}#ap:disabled{background:#8a8a8a;cursor:not-allowed}
+</style></head><body>
+<div class="wrap">
+<div class="top"><div class="logo">AM//G</div><div class="pill">Greenitco Technologies ▾</div><div class="pill">Mati AI</div><div class="sp"></div><div class="pill"><span class="dot"></span>Available</div><div class="sp"></div><div class="av"></div><span>Ananth S ▾</span></div>
+<div class="body">
+<div class="rail"><div><b></b>Home</div><div><b></b>Asset</div><div><b></b>Ticket</div><div><b></b>Users</div><div><b></b>Patch Ma…</div><div><b></b>Procurem…</div><div><b></b>Mailroom</div><div><b></b>RDP</div></div>
+<div class="side"><h4>Ticket Management</h4><p>☆ Requestable Devices</p><p>☆ Requestable Devices</p><p>☆ Requestable Devices</p><p>☆ Requestable Devices</p><p>☆ Requestable Devices</p></div>
+<div class="main">
+<div class="title">← Service Ticket Management<span class="sp"></span><button class="btn-c">+ Create Ticket</button></div>
+<div class="tabs"><div><span>List View</span><span>Workspace View</span><span class="on">Actions View</span></div><div class="search">⌕ Sort</div></div>
+<div class="bar"><span class="ob"><i class="chk"></i>Select All</span><span class="ob">Show (1-10) ▾</span><span class="lg"><i style="background:#a21caf"></i>New Ticket<i style="background:#e8960c"></i>Guest Updated<i style="background:#26307a"></i>Handler Updated<i style="background:#bbb"></i>Spam</span>
+<span class="ob" style="margin-left:auto">⇅ Sort</span><button class="ob" id="fbtn">⛉ Filter</button></div>
+<div class="list" id="list"></div>
+<div class="foot"><span id="cnt"></span><span class="pg"><span>‹ Previous</span><span class="on">01</span><span>02</span><span>…</span><span>10</span><span>Next ›</span></span></div>
+</div></div></div>
 
-    body {
-      min-height: 100vh;
-      font-family: Georgia, "Times New Roman", serif;
-      background: #0f172a;
-      color: #f8fafc;
-    }
+<div id="ov"><div class="modal">
+<div class="mh">Filter<span class="x" id="cl">×</span></div>
+<div class="mb"><div class="hd"><b>Filter Menus</b><span><button class="ob" id="rec">Recently Used</button><span style="position:relative"><button class="ob" id="sv">Saved Filters ▾</button><div class="menu" id="svm" style="display:none;top:34px;right:0;left:auto;min-width:200px"></div></span></span></div>
+<div id="rows"></div><div id="tools"></div></div>
+<div class="mf"><button id="cn">Cancel</button><button id="ap" disabled>Apply</button></div>
+</div></div>
 
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-    }
+<script>
+const CH='<svg viewBox="0 0 16 16" fill="none" stroke="#555" stroke-width="1.5"><path d="M3 6l5 5 5-5"/></svg>';
+const FIELDS=['Status','Priority','Category','Sub Category','Ticket Handler','Tag','Location'];
+const VALS={Status:['Open','Inprogress','Resolved','Hold','Reopened','Closed'],Priority:['Critical','High','Medium','Low'],Category:['Hardware','Software','Network','Access'],'Sub Category':['Laptop','Printer','VPN','Email'],'Ticket Handler':['Rohit Sharma','Priya N','Arjun K'],Tag:['VIP','Escalated','Recurring'],Location:['Mumbai','Chennai','Delhi','Bengaluru']};
+const T=[
+{id:'343660',c:'#a21caf',s:'Inprogress',sl:'In Progress',sb:'#fdebc8',p:'Critical',pc:'#a31515',loc:'Mumbai',sla:'SLA : 10 Min Left',sc:'#e8960c'},
+{id:'343660',c:'#26307a',s:'Open',sl:'Open',sb:'#fde1e1',p:'High',pc:'#f07020',loc:'Mumbai',sla:'SLA : 4 Hrs Left',sc:'#0f9a8a',vip:1},
+{id:'343661',c:'#26307a',s:'Hold',sl:'On Hold',sb:'#dde8fb',p:'Medium',pc:'#e0a000',loc:'Chennai',sla:'SLA : Breached',sc:'#c62828'},
+{id:'343662',c:'#a21caf',s:'Resolved',sl:'Resolved',sb:'#d9f2e3',p:'Low',pc:'#2e9a5a',loc:'Delhi',sla:'SLA : Met',sc:'#0f9a8a'},
+{id:'343663',c:'#26307a',s:'Reopened',sl:'Reopened',sb:'#fde1e1',p:'High',pc:'#f07020',loc:'Chennai',sla:'SLA : 2 Hrs Left',sc:'#e8960c'}];
+const KEY={Status:'s',Priority:'p',Location:'loc'};
+let applied=[],draft=[],open=null,lastUsed=[];
+const $=id=>document.getElementById(id);
 
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 400;
-      letter-spacing: 0.02em;
-    }
-
-    .hero p {
-      margin-top: 1rem;
-      font-size: 1.125rem;
-      color: #cbd5e1;
-    }
-  </style>
-</head>
-<body>
-  <section class="hero">
-    <div>
-      <h1>Your headline goes here</h1>
-      <p>Simple placeholder text in the center of the screen.</p>
-    </div>
-  </section>
-</body>
-</html>
+function renderList(){
+  const rs=T.filter(t=>applied.every(f=>!KEY[f.f]||t[KEY[f.f]]===f.v));
+  $('list').innerHTML=rs.length?rs.map(t=>`<div class="card"><div class="id" style="background:${t.c}">#${t.id}</div>
+  <div class="l"><h3>Laptop Not Working - Hardware Issue Greenitco<span class="tag" style="background:${t.sc}">${t.sla}</span></h3>
+  <div class="m"><span>◉ Rohit Sharma</span><span class="st" style="background:${t.sb}">${t.sl}</span><span>Tasks : <u>02</u></span><span>TAT: <b style="font-weight:500">02 Hrs</b></span><span>▤ IT Support</span></div>
+  <div class="pr"><span>Priority : <b style="color:${t.pc}">▲</b> ${t.p}</span><span>Created at : 10 Jun, 02:52 PM</span><span>☹ <u>Negative</u></span><span>⌖ ${t.loc}</span></div></div>
+  <div class="r"><div>Assigned to <span style="color:red">(12)</span> &nbsp; ◉ Rohit Sharma</div><div>Last Update: &nbsp; ◷ 10 Jun, 02:52 PM ${t.vip?'<span class="tag" style="background:linear-gradient(90deg,#0a1a4f,#0ad1c8);float:right;padding:5px 12px">VIP Ticket</span>':''}</div>
+  <div class="acts"><span>Escalate</span><span>Edit</span><span>Transfer</span><span>History</span><span>⋮ More</span></div></div></div>`).join(''):'<div class="empty">No tickets match these filters.</div>';
+  $('cnt').textContent=applied.length?`Showing ${rs.length} of ${rs.length} Records (filtered)`:'Showing 1-10 of 300 Records';
+  const b=$('fbtn');b.className='ob'+(applied.length?' act':'');b.innerHTML='⛉ Filter'+(applied.length?`<em>${applied.length}</em>`:'');
+}
+const valid=r=>r.f&&r.v;
+function renderRows(){
+  $('rows').innerHTML=draft.map((r,i)=>{
+    const fo=open&&open.i===i&&open.k==='f',vo=open&&open.i===i&&open.k==='v';
+    const used=draft.filter((_,j)=>j!==i).map(x=>x.f);
+    return `<div class="row"><div class="dd ${fo?'open':''}"><div class="dt ${r.f?'':'ph'}" data-o="${i}f">${r.f||'Select Filter'}${CH}</div>
+    ${fo?`<div class="menu"><input placeholder="Search..." id="q" autofocus>${FIELDS.filter(f=>!used.includes(f)).map(f=>`<div data-pf="${i}|${f}" class="${r.f===f?'sel':''}"><i class="ic"></i>${f}</div>`).join('')}</div>`:''}</div>
+    <div class="dd ${vo?'open':''}"><div class="dt ${r.v?'':'ph'}" data-o="${i}v">${r.v||(r.f?'Select '+r.f:'Select Value')}${CH}</div>
+    ${vo&&r.f?`<div class="menu">${VALS[r.f].map(v=>`<div data-pv="${i}|${v}" class="${r.v===v?'sel':''}">${v}</div>`).join('')}</div>`:''}</div>
+    <span class="del" data-d="${i}" title="Remove">🗑</span></div>`}).join('');
+  const allSet=draft.every(r=>r.f);
+  $('tools').innerHTML=(allSet&&draft.length<FIELDS.length?'<button class="add" id="add">＋ Add Filter</button>':'')+(draft.length>1?'<button class="ca" id="clr">Clear All</button>':'');
+  $('ap').disabled=!draft.some(valid);
+  const q=$('q');if(q)q.focus();
+}
+function openModal(){draft=applied.length?applied.map(x=>({...x})):[{f:null,v:null}];open=null;renderRows();$('ov').classList.add('show')}
+function closeModal(){$('ov').classList.remove('show');open=null;$('svm').style.display='none'}
+$('fbtn').onclick=openModal;$('cl').onclick=$('cn').onclick=closeModal;
+$('ov').onclick=e=>{if(e.target.id==='ov')closeModal()};
+$('ap').onclick=()=>{applied=draft.filter(valid).map(x=>({...x}));lastUsed=applied.map(x=>({...x}));renderList();closeModal()};
+$('rec').onclick=()=>{if(lastUsed.length){draft=lastUsed.map(x=>({...x}));renderRows()}};
+const PRESETS=[['High priority · Chennai',[{f:'Priority',v:'High'},{f:'Location',v:'Chennai'}]],['Open tickets',[{f:'Status',v:'Open'}]]];
+$('svm').innerHTML=PRESETS.map((p,i)=>`<div data-ps="${i}">${p[0]}</div>`).join('');
+$('sv').onclick=e=>{e.stopPropagation();const m=$('svm');m.style.display=m.style.display==='none'?'block':'none'};
+$('svm').onclick=e=>{const i=e.target.dataset.ps;if(i!=null){draft=PRESETS[i][1].map(x=>({...x}));$('svm').style.display='none';renderRows()}};
+$('rows').onclick=e=>{
+  const t=e.target.closest('[data-o],[data-pf],[data-pv],[data-d]');if(!t)return;e.stopPropagation();
+  if(t.dataset.o){const i=+t.dataset.o.slice(0,-1),k=t.dataset.o.slice(-1);
+    if(k==='v'&&!draft[i].f)return;
+    open=open&&open.i===i&&open.k===k?null:{i,k};renderRows()}
+  else if(t.dataset.pf){const[i,f]=t.dataset.pf.split('|');if(draft[i].f!==f)draft[i]={f,v:null};open=null;renderRows()}
+  else if(t.dataset.pv){const[i,v]=t.dataset.pv.split('|');draft[i].v=v;open=null;renderRows()}
+  else if(t.dataset.d!=null){draft.splice(+t.dataset.d,1);if(!draft.length)draft=[{f:null,v:null}];open=null;renderRows()}
+};
+$('tools').onclick=e=>{
+  if(e.target.id==='add'){draft.push({f:null,v:null});open={i:draft.length-1,k:'f'};renderRows()}
+  if(e.target.id==='clr'){draft=[{f:null,v:null}];open=null;renderRows()}
+};
+$('rows').oninput=e=>{if(e.target.id==='q'){const s=e.target.value.toLowerCase();e.target.parentNode.querySelectorAll('[data-pf]').forEach(d=>d.style.display=d.textContent.toLowerCase().includes(s)?'':'none')}};
+document.addEventListener('click',e=>{if(!e.target.closest('.dd')&&open){open=null;renderRows()}if(!e.target.closest('#sv'))$('svm').style.display='none'});
+renderList();
+</script></body></html>
